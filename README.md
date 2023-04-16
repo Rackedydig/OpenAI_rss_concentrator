@@ -33,8 +33,7 @@ The script uses a configuration file named settings.conf to store settings such 
 
 Here's a sample settings.conf file:
 
-css
-
+```
 [OpenAI]
 api_key=your_openai_api_key_here
 language = English
@@ -46,6 +45,7 @@ hours = 100
 time_limit_hours=100
 output_file = output.html
 HTML_title = Feed
+```
 
 Replace your_openai_api_key_here with your actual OpenAI API key.
 
@@ -54,9 +54,9 @@ Replace your_openai_api_key_here with your actual OpenAI API key.
 
 To run the script, simply execute the following command:
 
-bash
-
+```
 python threat_intelligence_feed.py
+```
 
 The script will generate an HTML output file named output.html containing the deduplicated and prioritized threat intelligence news.
 
