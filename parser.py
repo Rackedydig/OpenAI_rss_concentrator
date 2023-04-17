@@ -17,7 +17,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 import ast
 
 # Constants
-CONFIG_FILE_PATH = "settings.conf"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(script_dir, "settings.conf")
+CONFIG_FILE_PATH = file_path
+
 
 # Read settings from the configuration file
 config = configparser.ConfigParser()
@@ -41,14 +44,17 @@ try:
 except configparser.NoSectionError:
     raise ValueError("Error: The 'OpenAI' section is missing in the settings.conf file")
 
+output_path = os.path.join(script_dir, output_file)    
+    
 openai.api_key = openai_api_key
 
 
 def fetch_rss_feed(feed_url, retries=3, delay=5):
     for attempt in range(retries):
         try:
-            feed = feedparser.parse(feed_url)
-            feed.entries.reverse() 
+            if feed is None or not hasattr(feed, 'entries'):
+                pass
+            feed.entries = sorted(feed.entries, key=lambda x: x.published_parsed if hasattr(x, 'published_parsed') else x.updated_parsed, reverse=True) 
             return feed
         except RemoteDisconnected as e:
             if attempt < retries - 1:
@@ -200,4 +206,4 @@ for feed_url in rss_feed_urls:
 
 unique_main_ideas = deduplicate_main_ideas(stories)
 sorted_unique_main_ideas = sorted(unique_main_ideas, key=lambda x: x["count"], reverse=True)
-create_html_output(sorted_unique_main_ideas, file_name=output_file)
+create_html_output(sorted_unique_main_ideas, file_name=output_path)
